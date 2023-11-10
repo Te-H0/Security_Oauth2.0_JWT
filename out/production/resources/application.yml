@@ -4,6 +4,7 @@ spring:
       "local": "local, jwt"
     active: local
 ---
+spring:
 
   h2:
     console:
@@ -24,6 +25,7 @@ spring:
         format_sql: true
         show_sql: true
     defer-datasource-initialization: true
+
 
 logging:
   level:
