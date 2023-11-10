@@ -1,4 +1,4 @@
-package me.practice.Security_Oauth2._JWT.domain.test;
+package me.practice.SecurityOauth2Jwt.domain.test;
 
 import lombok.*;
 

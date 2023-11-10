@@ -1,4 +1,4 @@
-package me.practice.Security_Oauth2._JWT.jwt;
+package me.practice.SecurityOauth2Jwt.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -32,12 +32,11 @@ import java.util.Optional;
 
 @Slf4j
 public class JwtFilter extends GenericFilterBean {
-
     public static final String AUTHORIZATION_HEADER = "Authorization";
     private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
+    private final TokenProvider tokenProvider;
     @Value("${jwt.header}")
     private String accessHeader;
-    private TokenProvider tokenProvider;
 
     public JwtFilter(TokenProvider tokenProvider) {
         this.tokenProvider = tokenProvider;
@@ -47,6 +46,7 @@ public class JwtFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+        log.info("요청 uri => {}", httpServletRequest.getRequestURI());
         log.info("진짜 여기지");
         log.info("jwt!!!!!!!=>{}", (httpServletRequest.getHeader("Content-Type")));
         String jwt = String.valueOf(extractAccessToken(httpServletRequest));

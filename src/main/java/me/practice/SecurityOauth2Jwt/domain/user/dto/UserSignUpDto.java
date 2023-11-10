@@ -1,4 +1,4 @@
-package me.practice.Security_Oauth2._JWT.domain.user.dto;
+package me.practice.SecurityOauth2Jwt.domain.user.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,5 +10,5 @@ public class UserSignUpDto {
     private String email;
     private String password;
     private String nickname;
-    
+
 }

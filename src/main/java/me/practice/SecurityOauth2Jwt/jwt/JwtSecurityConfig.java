@@ -1,4 +1,4 @@
-package me.practice.Security_Oauth2._JWT.jwt;
+package me.practice.SecurityOauth2Jwt.jwt;
 
 
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
@@ -15,7 +15,7 @@ public class JwtSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
 
     // JwtFilter를 통해 Security로직에 필터 등록
     @Override
-    public void configure(HttpSecurity http) throws Exception {
+    public void configure(HttpSecurity http) {
         http.addFilterBefore(
                 new JwtFilter(tokenProvider),
                 UsernamePasswordAuthenticationFilter.class

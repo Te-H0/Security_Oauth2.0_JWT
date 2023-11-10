@@ -1,8 +1,8 @@
-package me.practice.Security_Oauth2._JWT.domain.user.controller;
+package me.practice.SecurityOauth2Jwt.domain.user.controller;
 
 import lombok.RequiredArgsConstructor;
-import me.practice.Security_Oauth2._JWT.domain.user.dto.UserSignUpDto;
-import me.practice.Security_Oauth2._JWT.domain.user.service.UserService;
+import me.practice.SecurityOauth2Jwt.domain.user.dto.UserSignUpDto;
+import me.practice.SecurityOauth2Jwt.domain.user.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

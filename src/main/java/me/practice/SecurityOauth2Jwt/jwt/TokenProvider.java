@@ -1,4 +1,4 @@
-package me.practice.Security_Oauth2._JWT.jwt;
+package me.practice.SecurityOauth2Jwt.jwt;
 
 
 import com.auth0.jwt.JWT;
@@ -81,13 +81,14 @@ public class TokenProvider implements InitializingBean {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-
+        log.info("어디고1");
         Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
-
+        log.info("어디고2");
         User principal = new User(claims.getSubject(), "", authorities);
+        log.info("어디고3");
 
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }

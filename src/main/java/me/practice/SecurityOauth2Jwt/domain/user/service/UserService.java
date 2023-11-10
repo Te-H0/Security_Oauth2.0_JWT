@@ -1,11 +1,11 @@
-package me.practice.Security_Oauth2._JWT.domain.user.service;
+package me.practice.SecurityOauth2Jwt.domain.user.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import me.practice.Security_Oauth2._JWT.domain.user.Repository.UserRepository;
-import me.practice.Security_Oauth2._JWT.domain.user.Role;
-import me.practice.Security_Oauth2._JWT.domain.user.User;
-import me.practice.Security_Oauth2._JWT.domain.user.dto.UserSignUpDto;
+import me.practice.SecurityOauth2Jwt.domain.user.Repository.UserRepository;
+import me.practice.SecurityOauth2Jwt.domain.user.Role;
+import me.practice.SecurityOauth2Jwt.domain.user.User;
+import me.practice.SecurityOauth2Jwt.domain.user.dto.UserSignUpDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

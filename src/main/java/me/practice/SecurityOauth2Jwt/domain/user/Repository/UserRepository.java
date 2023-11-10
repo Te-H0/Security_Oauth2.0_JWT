@@ -1,7 +1,7 @@
-package me.practice.Security_Oauth2._JWT.domain.user.Repository;
+package me.practice.SecurityOauth2Jwt.domain.user.Repository;
 
-import me.practice.Security_Oauth2._JWT.domain.user.SocialType;
-import me.practice.Security_Oauth2._JWT.domain.user.User;
+import me.practice.SecurityOauth2Jwt.domain.user.SocialType;
+import me.practice.SecurityOauth2Jwt.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
