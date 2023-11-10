@@ -29,12 +29,12 @@ public class UserService {
 
         User user = User.builder()
                 .email(userSignUpDto.getEmail())
-                .password(userSignUpDto.getPassword())
+                .password(passwordEncoder.encode(userSignUpDto.getPassword()))
                 .nickname(userSignUpDto.getNickname())
                 .role(Role.USER)
                 .build();
 
-        user.passwordEncode(passwordEncoder);
+
         userRepository.save(user);
     }
 }
