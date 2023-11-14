@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 import me.practice.SecurityOauth2Jwt.domain.user.Repository.UserRepository;
 import me.practice.SecurityOauth2Jwt.domain.user.Role;
 import me.practice.SecurityOauth2Jwt.domain.user.User;
+import me.practice.SecurityOauth2Jwt.domain.user.dto.UserSignInDto;
 import me.practice.SecurityOauth2Jwt.domain.user.dto.UserSignUpDto;
+import me.practice.SecurityOauth2Jwt.jwt.TokenProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TokenProvider tokenProvider;
 
     public void signUp(UserSignUpDto userSignUpDto) throws Exception {
 
@@ -36,5 +39,14 @@ public class UserService {
 
 
         userRepository.save(user);
+    }
+
+    public String signIn(UserSignInDto userSignInDto) {
+        String email = userSignInDto.getEmail();
+        if (userRepository.findByEmail(email).isPresent()) {
+            return tokenProvider.createAccessToken(email);
+        } else {
+            throw new RuntimeException("없는 회원의 이메일!");
+        }
     }
 }

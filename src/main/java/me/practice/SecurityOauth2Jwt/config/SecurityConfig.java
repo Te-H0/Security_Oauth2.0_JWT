@@ -51,7 +51,8 @@ public class SecurityConfig {
         return (web) -> web.ignoring()
                 .requestMatchers(new AntPathRequestMatcher("/h2-console/**"))
                 .requestMatchers(new AntPathRequestMatcher("/favicon.ico"))
-                .requestMatchers(new AntPathRequestMatcher("/authenticate"));
+                .requestMatchers(new AntPathRequestMatcher("/sign-up"))
+                .requestMatchers(new AntPathRequestMatcher("/sign-in"));
 
         //h2-console 하위 요청, 파비콘 요청은 security 로직을 수행하지 않게 해줌.
     }
@@ -73,8 +74,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests((registry) ->
                         registry.requestMatchers(
-                                        new AntPathRequestMatcher("/api/signup")).permitAll()
-                                .requestMatchers(PathRequest.toH2Console()).permitAll()
+                                        PathRequest.toH2Console()).permitAll()
                                 .anyRequest().authenticated()
 
                 )

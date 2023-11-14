@@ -8,10 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
@@ -32,11 +30,10 @@ import java.util.Optional;
 
 @Slf4j
 public class JwtFilter extends GenericFilterBean {
-    public static final String AUTHORIZATION_HEADER = "Authorization";
     private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
     private final TokenProvider tokenProvider;
-    @Value("${jwt.header}")
-    private String accessHeader;
+
+    private final String AUTHORIZE_HEADER = "Authorization";
 
     public JwtFilter(TokenProvider tokenProvider) {
         this.tokenProvider = tokenProvider;
@@ -46,19 +43,26 @@ public class JwtFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+        Optional<String> jwtOptional = extractAccessToken(httpServletRequest);
         log.info("요청 uri => {}", httpServletRequest.getRequestURI());
         log.info("진짜 여기지");
-        log.info("jwt!!!!!!!=>{}", (httpServletRequest.getHeader("Content-Type")));
-        String jwt = String.valueOf(extractAccessToken(httpServletRequest));
+        log.info("accessHeader => {}", AUTHORIZE_HEADER);
+
 
         log.info("filter error 1");
         String requestURI = httpServletRequest.getRequestURI();
         log.info("filter error 2");
-        if (StringUtils.hasText(jwt) && tokenProvider.isTokenValid(jwt)) {
-            log.info("filter error 3");
-            Authentication authentication = tokenProvider.getAuthentication(jwt);//토큰이 정상적이면 authentication 받아옴
-            SecurityContextHolder.getContext().setAuthentication(authentication);// 받아온 authentication 을 securityContext 에 저장
-            logger.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
+        if (jwtOptional.isPresent()) {
+            String jwt = jwtOptional.get();
+            if (tokenProvider.isTokenValid(jwt)) {
+                Authentication authentication = tokenProvider.getAuthentication(jwt);//토큰이 정상적이면 authentication 받아옴
+                SecurityContextHolder.getContext().setAuthentication(authentication);// 받아온 authentication 을 securityContext 에 저장
+                logger.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
+            } else {
+                logger.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
+            }
+            log.info("jwt!!!!!!!=>{}", (jwt));
+            log.info("토큰 유효!!");
         } else {
             logger.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
         }
@@ -67,10 +71,12 @@ public class JwtFilter extends GenericFilterBean {
     }
 
     public Optional<String> extractAccessToken(HttpServletRequest request) {
+        System.out.println("accessHeader => " + AUTHORIZE_HEADER);
         log.info("이거니?");
-        String bearerToken = request.getHeader(accessHeader);
+        log.info("header이름 => {}", AUTHORIZE_HEADER);
+        String bearerToken = request.getHeader(AUTHORIZE_HEADER);
         log.info("headr => {}", bearerToken);
-        return Optional.ofNullable(request.getHeader(accessHeader));
+        return Optional.ofNullable(request.getHeader(AUTHORIZE_HEADER));
 
     }
     //-------------------------------------------------------------------------------------------------------------------------
