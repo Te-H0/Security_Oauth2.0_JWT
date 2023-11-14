@@ -73,7 +73,6 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests((registry) ->
                         registry.requestMatchers(
-                                        new AntPathRequestMatcher("/authenticate"),
                                         new AntPathRequestMatcher("/api/signup")).permitAll()
                                 .requestMatchers(PathRequest.toH2Console()).permitAll()
                                 .anyRequest().authenticated()
