@@ -1,11 +1,7 @@
 package me.practice.SecurityOauth2Jwt.jwt;
 
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +25,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class TokenProvider implements InitializingBean {
-    private static final String AUTHORITIES_KEY = "auth";
     private static final String EMAIL_CLAIM = "email";
     private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
     private final String secret;
@@ -72,8 +67,7 @@ public class TokenProvider implements InitializingBean {
     /**
      * getAuthentication 필요한가????????????
      */
-
-    //Token에 담겨있는 권한 정보를 이용해서 Autehntication 객체 리턴-> Token으로 클레임 만들고 이를 이용해 유저 객체를 만들어서 최종적으로 Authentication 객체 리턴
+//Token에 담겨있는 권한 정보를 이용해서 Autehntication 객체 리턴-> Token으로 클레임 만들고 이를 이용해 유저 객체를 만들어서 최종적으로 Authentication 객체 리턴
     public Authentication getAuthentication(String token) {
         Claims claims = Jwts
                 .parserBuilder()
@@ -81,9 +75,11 @@ public class TokenProvider implements InitializingBean {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+        //이거 나중에 getClaims 메서드로 만들어
+        
         log.info("어디고1");
         Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+                Arrays.stream(claims.get(EMAIL_CLAIM).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
         log.info("어디고2");
@@ -93,15 +89,50 @@ public class TokenProvider implements InitializingBean {
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
+
+    //    //Token에 담겨있는 권한 정보를 이용해서 Autehntication 객체 리턴-> Token으로 클레임 만들고 이를 이용해 유저 객체를 만들어서 최종적으로 Authentication 객체 리턴
+//    public Authentication getAuthentication(String token) {
+//        Claims claims = Jwts
+//                .parserBuilder()
+//                .setSigningKey(key)
+//                .build()
+//                .parseClaimsJws(token)
+//                .getBody();
+//        log.info("어디고1");
+//        Collection<? extends GrantedAuthority> authorities =
+//                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+//                        .map(SimpleGrantedAuthority::new)
+//                        .collect(Collectors.toList());
+//        log.info("어디고2");
+//        User principal = new User(claims.getSubject(), "", authorities);
+//        log.info("어디고3");
+//
+//        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+//    }
     public boolean isTokenValid(String token) {
         try {
-            JWT.require(Algorithm.HMAC512(secret)).build().verify(token);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (Exception e) {
-            log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
-            return false;
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            logger.info("잘못된 JWT 서명입니다.");
+        } catch (ExpiredJwtException e) {
+            logger.info("만료된 JWT 토큰입니다.");
+        } catch (UnsupportedJwtException e) {
+            logger.info("지원되지 않는 JWT 토큰입니다.");
+        } catch (IllegalArgumentException e) {
+            logger.info("JWT 토큰이 잘못되었습니다.");
         }
+        return false;
     }
+
+//        try {
+//            JWT.require(Algorithm.HMAC512(secret)).build().verify(token);
+//            return true;
+//        } catch (Exception e) {
+//            log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
+//            return false;
+//        }
+
 //        Date now = new Date();
 //        return JWT.create() // JWT 토큰을 생성하는 빌더 반환
 //                .withSubject(ACCESS_TOKEN_SUBJECT) // JWT의 Subject 지정 -> AccessToken이므로 AccessToken
